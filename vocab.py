@@ -79,7 +79,7 @@ def build_best_match_map(
 
 def quiz(start: str, vocab_bank: pd.DataFrame, match_map: dict):
     print("Action: [m/Enter]Meaning, [n]Next, [q]Quit")
-    try
+    try:
         current = match_map[start]
     except KeyError:
         current = match_map.keys()[random.randint(1, len(match_map))]
