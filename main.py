@@ -1,6 +1,7 @@
 import pandas as pd
 import argparse
 import os
+import json
 
 import vocab
 
@@ -28,10 +29,11 @@ if __name__ == "__main__":
         assert os.path.exists(args.embedding), f"Embedding path not found: {args.embedding}"
         print(
             f"Initialize with word2vec embedding: {args.embedding}")
-        sim_map = vocab.build_similarity_map()
+        match_map = vocab.build_best_match_map()
+
+
     if args.vocab.lower() == "gre":
         start = input("Choose an arbitrary vocab to start.")
         vocab = vocab.load_vocab("./database/gre3000.xlsx")
         emb_idx = vocab.load_word2vec(args.embedding)
         quiz(start, vocab, emb_idx)
-    
