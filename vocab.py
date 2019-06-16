@@ -66,7 +66,6 @@ def build_best_match_map(
         match_map[word] = best_match
     return match_map
 
-
 # c = build_similarity_map(vocab_path="./database/gre3000.xlsx",
 #                          embedding_path="/Users/tianyudu/Downloads/gre/glove.6B.50d.txt")
 
