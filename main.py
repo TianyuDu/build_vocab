@@ -30,10 +30,14 @@ if __name__ == "__main__":
         print(
             f"Initialize with word2vec embedding: {args.embedding}")
         match_map = vocab.build_best_match_map()
+        with open("./match_map.json", "w") as f:
+            f.write(json.dumps(match_map))
+        print("Match map initialized, stored to ./match_map.json")
 
 
     if args.vocab.lower() == "gre":
-        start = input("Choose an arbitrary vocab to start.")
+        start = input("Choose an arbitrary vocab to start >>> ")
         vocab = vocab.load_vocab("./database/gre3000.xlsx")
-        emb_idx = vocab.load_word2vec(args.embedding)
-        quiz(start, vocab, emb_idx)
+        with open("./match_map.json", "w") as f:
+            match_map = 
+        quiz(start, vocab, match_map)
