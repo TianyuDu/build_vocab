@@ -11,7 +11,7 @@ import random
 
 def load_vocab(path: str) -> pd.DataFrame:
     df = pd.read_excel(path, sheet_name="main", header=0)
-    column_kept = ["Word", "UK Phonetics", "US Phonetics",
+    column_kept = ["word", "UK Phonetics", "US Phonetics",
             "Paraphrase (w/ POS)", "Paraphrase (English)"]
     return df[column_kept]
 
@@ -28,7 +28,7 @@ def load_word2vec(embedding_path: str) -> dict:
     print("Embedding data loaded.")
     return embeddings_index
 
-def similarity(word0: str, word1: str, embedding):
+def similarity(word0: str, word1: str, embedding: dict):
     def res(x): return embedding[x].reshape(1, len(embedding[x]))
     word0 = res(word0)
     word1 = res(word1)
@@ -46,7 +46,7 @@ def find_match(word: str, embedding: dict, vocab_bank: pd.DataFrame):
         similarity(word, y, embedding) for y in vocab_bank["word"]
     ]
     argmax = np.argmax(scores)
-    return vocab_bank["word"][argmax]
+    return vocab_bank["word"].values[argmax]
 
 def build_best_match_map(
         vocab_path: str,
@@ -57,10 +57,10 @@ def build_best_match_map(
     vocab_bank = load_vocab(vocab_path)
     
     total = len(vocab_bank)
-    goodness = [w in emb_idx.keys() for w in vocab_bank["word"]]
+    goodness = [w in embedding.keys() for w in vocab_bank["word"]]
     vocab_bank = vocab_bank[goodness]
     print(f"{len(vocab_bank)/total*100:0.2f}% of vocab bank are found in the embedding file.")
-
+    print("Building the match map...")
     match_map = {}
     for word in tqdm(vocab_bank["word"]):
         best_match = find_match(word, embedding, vocab_bank)
