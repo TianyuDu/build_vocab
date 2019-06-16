@@ -82,7 +82,7 @@ def quiz(start: str, vocab_bank: pd.DataFrame, match_map: dict):
     try:
         current = match_map[start]
     except KeyError:
-        current = match_map.keys()[random.randint(1, len(match_map))]
+        current = list(match_map.keys())[random.randint(1, len(match_map))]
         print(f"Start vocab is not in the vocab bank, a random vocab is selected from the vocab bank: \t\033[91m {current}\033[00m")
 
     action = ""
@@ -94,10 +94,10 @@ def quiz(start: str, vocab_bank: pd.DataFrame, match_map: dict):
         while action.lower() not in ["", "m", "n", "q"]:
             action = input(">>> ")
         if action in ["", "m"]:
-            print(vocab_bank[vocab_bank["word"] == current]["meaning"].values[0])
-            current = get_next(current)
+            print(vocab_bank[vocab_bank["word"] == current].values)
+            current = match_map[current]
         elif action == "n":
-            current = get_next(current)
+            current = match_map[current]
         elif action == "q":
             break
         count += 1

@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     if args.vocab == "gre":
         start = input("Choose an arbitrary vocab to start >>> ")
-        vocab = vocab.load_vocab("./database/gre3000.xlsx")
+        vocab_bank = vocab.load_vocab("./database/gre3000.xlsx")
         with open("./database/match_map.json", "r") as f:
             match_map = json.load(f)
-        quiz(start, vocab, match_map)
+        vocab.quiz(start, vocab_bank, match_map)
