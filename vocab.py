@@ -27,33 +27,6 @@ def load_word2vec(embedding_path: str) -> dict:
     print("Embedding data loaded.")
     return embeddings_index
 
-
-def build_similarity_map(
-        vocab_path: str,
-        embedding_path: str
-        ) -> pd.DataFrame:
-    print("Building similarity map...")
-    emb_idx = load_word2vec(embedding_path)
-    vocab_bank = load_vocab(vocab_path)
-    
-    total = len(vocab_bank)
-    goodness = [w in emb_idx.keys() for w in vocab_bank["Word"]]
-    vocab_bank = vocab_bank[goodness]
-    print(f"{len(vocab_bank)/total*100:0.2f}% of vocab bank are found in the embedding file.")
-
-    total_sim_map = {}
-    for word0 in tqdm(vocab_bank["Word"]):
-        sim_map = {}
-        for word1 in vocab_bank["Word"]:
-            sim_map[word1] = similarity(word0, word1, emb_idx)
-        total_sim_map[word0] = sim_map
-    return total_sim_map
-
-
-# c = build_similarity_map(vocab_path="./database/gre3000.xlsx",
-#                          embedding_path="/Users/tianyudu/Downloads/gre/glove.6B.50d.txt")
-
-
 def similarity(word0: str, word1: str, embedding):
     def res(x): return embedding[x].reshape(1, len(embedding[x]))
     word0 = res(word0)
@@ -67,12 +40,34 @@ def cos_distance(x, y):
     return np.dot(x, y) / (np.linalg.norm(x) * np.linalg.norm(y))
 
 
-def find_match(word: str, embedding: dict):
+def find_match(word: str, embedding: dict, vocab_bank: pd.DataFrame):
     scores = [
         similarity(word, y, embedding) for y in vocab_bank["word"]
     ]
     argmax = np.argmax(scores)
     return vocab_bank["word"][argmax]
+
+def build_best_match_map(
+        vocab_path: str,
+        embedding_path: str
+        ) -> pd.DataFrame:
+    print("Building similarity map...")
+    embedding = load_word2vec(embedding_path)
+    vocab_bank = load_vocab(vocab_path)
+    
+    total = len(vocab_bank)
+    goodness = [w in emb_idx.keys() for w in vocab_bank["word"]]
+    vocab_bank = vocab_bank[goodness]
+    print(f"{len(vocab_bank)/total*100:0.2f}% of vocab bank are found in the embedding file.")
+
+    match_map = {}
+    for word in tqdm(vocab_bank["word"]):
+        best_match = find_match(word, embedding, vocab_bank)
+    return match_map
+
+
+# c = build_similarity_map(vocab_path="./database/gre3000.xlsx",
+#                          embedding_path="/Users/tianyudu/Downloads/gre/glove.6B.50d.txt")
 
 # path = "./vocab.xlsx"
 # vocab_bank_all = load_vocab(path)
