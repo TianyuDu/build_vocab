@@ -6,6 +6,7 @@ import os
 from typing import Dict
 import json
 from tqdm import tqdm
+import random
 
 
 def load_vocab(path: str) -> pd.DataFrame:
@@ -66,6 +67,8 @@ def build_best_match_map(
         match_map[word] = best_match
     return match_map
 
+
+
 # c = build_similarity_map(vocab_path="./database/gre3000.xlsx",
 #                          embedding_path="/Users/tianyudu/Downloads/gre/glove.6B.50d.txt")
 
@@ -74,11 +77,17 @@ def build_best_match_map(
 # goodness = [w in embeddings_index.keys() for w in vocab_bank_all["word"]]
 # vocab_bank = vocab_bank_all[goodness]
 
-def quiz(start: str, vocab_bank: pd.DataFrame, embedding: dict):
+def quiz(start: str, vocab_bank: pd.DataFrame, match_map: dict):
     print("Action: [m/Enter]Meaning, [n]Next, [q]Quit")
-    current = find_match(start)
+    try
+        current = match_map[start]
+    except KeyError:
+        current = match_map.keys()[random.randint(1, len(match_map))]
+        print(f"Start vocab is not in the vocab bank, a random vocab is selected from the vocab bank: \t\033[91m {current}\033[00m")
+
     action = ""
     count = 0
+
     while True:
         print(f"\t\033[91m {current}\033[00m")
         action = input(">>> ")
@@ -86,9 +95,9 @@ def quiz(start: str, vocab_bank: pd.DataFrame, embedding: dict):
             action = input(">>> ")
         if action in ["", "m"]:
             print(vocab_bank[vocab_bank["word"] == current]["meaning"].values[0])
-            current = find_match(current, embedding)
+            current = get_next(current)
         elif action == "n":
-            current = find_match(current, embedding)
+            current = get_next(current)
         elif action == "q":
             break
         count += 1
