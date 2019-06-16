@@ -63,6 +63,7 @@ def build_best_match_map(
     match_map = {}
     for word in tqdm(vocab_bank["word"]):
         best_match = find_match(word, embedding, vocab_bank)
+        match_map[word] = best_match
     return match_map
 
 
