@@ -39,9 +39,9 @@ if __name__ == "__main__":
         print("Match map initialized, stored to ./database/match_map.json")
 
 
-    if args.vocab.lower() == "gre":
+    if args.vocab == "gre":
         start = input("Choose an arbitrary vocab to start >>> ")
         vocab = vocab.load_vocab("./database/gre3000.xlsx")
-        with open("./database/match_map.json", "w") as f:
-            match_map = json.loads(f)
+        with open("./database/match_map.json", "r") as f:
+            match_map = json.load(f)
         quiz(start, vocab, match_map)
